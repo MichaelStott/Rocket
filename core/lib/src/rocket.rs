@@ -251,7 +251,10 @@ impl Rocket {
 
                     // Return early so we don't set cookies twice.
                     return self.route_and_process(request, data);
-                } else {
+                } /* else if self.paths.contains(request.path) {
+                    // There was a matching route for this resource, but n
+                    self.handle_error(Status::MethodNotAllowed, request);
+                } */ else {
                     // No match was found and it can't be autohandled. 404.
                     self.handle_error(Status::NotFound, request)
                 }
