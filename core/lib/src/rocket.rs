@@ -254,7 +254,7 @@ impl Rocket {
                 } /* else if self.paths.contains(request.path) {
                     // There was a matching route for this resource, but n
                     self.handle_error(Status::MethodNotAllowed, request);
-                } */ else {
+                }  */ else {
                     // No match was found and it can't be autohandled. 404.
                     self.handle_error(Status::NotFound, request)
                 }
@@ -328,6 +328,7 @@ impl Rocket {
         // earlier, unsuccessful paths from being reflected in error response.
         // We may wish to relax this in the future.
         req.cookies().reset_delta();
+
 
         // Try to get the active catcher but fallback to user's 500 catcher.
         let catcher = self.catchers.get(&status.code).unwrap_or_else(|| {
