@@ -251,17 +251,16 @@ impl Rocket {
 
                     // Return early so we don't set cookies twice.
                     return self.route_and_process(request, data);
-                } /* else if self.paths.contains(request.path) {
+                } else if self.does_path_exist(request) {
                     // There was a matching route for this resource, but n
-                    self.handle_error(Status::MethodNotAllowed, request);
-                }  */ else {
+                    self.handle_error(Status::MethodNotAllowed, request)
+                }  else {
                     // No match was found and it can't be autohandled. 404.
                     self.handle_error(Status::NotFound, request)
                 }
             }
             Outcome::Failure(status) => self.handle_error(status, request),
         };
-
         // Set the cookies. Note that error responses will only include cookies
         // set by the error handler. See `handle_error` for more.
         for cookie in request.cookies().delta() {
@@ -269,6 +268,14 @@ impl Rocket {
         }
 
         response
+    }
+
+    fn does_path_exist<'s, 'r>(
+        &'s self,
+        request: &'r Request<'s>
+    ) -> bool {
+        let matching_routes: Vec<&Route> = self.routes().filter(|route| route.uri.path() == request.uri().path()).collect();
+        matching_routes.len() > 0
     }
 
     /// Tries to find a `Responder` for a given `request`. It does this by
